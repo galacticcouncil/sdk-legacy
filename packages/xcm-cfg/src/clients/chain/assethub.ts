@@ -6,14 +6,29 @@ import type {
 } from '@polkadot/types/lookup';
 import { Option } from '@polkadot/types';
 import { Codec } from '@polkadot/types/types';
+
 import { BN } from '@polkadot/util';
 import { xxhashAsHex } from '@polkadot/util-crypto';
 
 import { BalanceClient } from '../balance';
 
-export class HubClient extends BalanceClient {
+export class AssethubClient extends BalanceClient {
   constructor(chain: Parachain) {
     super(chain);
+  }
+
+  async checkIfSufficient(asset: Asset): Promise<boolean> {
+    const api = await this.chain.api;
+    const assetId = this.chain.getAssetId(asset);
+    const response =
+      await api.query.assetRegistry.asset<Option<PalletAssetsAssetDetails>>(
+        assetId
+      );
+    if (response.isEmpty) {
+      return true;
+    }
+    const details = response.unwrap();
+    return details.isSufficient.isTrue;
   }
 
   async checkIfFrozen(address: string, asset: Asset): Promise<boolean> {

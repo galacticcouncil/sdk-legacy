@@ -2,8 +2,8 @@ import {
   AnyChain,
   Asset,
   AssetAmount,
+  Dex,
   Parachain,
-  Swap,
   SwapQuote,
 } from '@galacticcouncil/xcm-core';
 import {
@@ -15,8 +15,11 @@ import {
 
 import { memoize1 } from '@thi.ng/memoize';
 
-export class HydrationSwap implements Swap {
+import { HydrationClient } from '../clients';
+
+export class HydrationDex implements Dex {
   readonly chain: Parachain;
+  readonly client: HydrationClient;
   readonly poolService?: PoolService;
 
   readonly getRouter = memoize1(async (mem: number) => {
@@ -24,12 +27,13 @@ export class HydrationSwap implements Swap {
     const api = await this.chain.api;
     const pool = this.poolService ? this.poolService : new PoolService(api);
     return new TradeRouter(pool, {
-      includeOnly: [PoolType.Omni, PoolType.Stable],
+      includeOnly: [PoolType.Omni, PoolType.Stable, PoolType.XYK],
     });
   });
 
   constructor(chain: AnyChain, poolService?: PoolService) {
     this.chain = chain as Parachain;
+    this.client = new HydrationClient(this.chain);
     this.poolService = poolService;
   }
 
@@ -43,10 +47,17 @@ export class HydrationSwap implements Swap {
     const amount = amountOut.toDecimal(amountOut.decimals);
 
     const router = await this.getRouter(1);
-    const trade = await router.getBestBuy(
+
+    const mostLiquidRoute = await router.getMostLiquidRoute(
+      aIn.toString(),
+      aOut.toString()
+    );
+
+    const trade = await router.getBuy(
       aIn.toString(),
       aOut.toString(),
-      amount
+      amount,
+      mostLiquidRoute
     );
 
     const amountIn = BigInt(trade.amountIn.toNumber());
