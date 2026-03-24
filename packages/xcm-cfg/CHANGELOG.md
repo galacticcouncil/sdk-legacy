@@ -1,5 +1,11 @@
 # @galacticcouncil/xcm-cfg
 
+## 10.26.0
+
+### Minor Changes
+
+- fix delivery fee
+
 ## 10.25.1
 
 ### Patch Changes
