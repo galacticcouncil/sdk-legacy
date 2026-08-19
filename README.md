@@ -3,7 +3,7 @@
 [![Build SDK](https://github.com/galacticcouncil/sdk/actions/workflows/main.yml/badge.svg)](https://github.com/galacticcouncil/sdk/actions/workflows/main.yml)
 [![License](https://img.shields.io/github/license/galacticcouncil/sdk)](https://github.com/galacticcouncil/sdk/blob/master/LICENSE.md)
 
-Legacy packages for [Hydration](https://hydration.net) chain integration. This monorepo contains the stable, `@polkadot/api`-based trading SDK and cross-chain transfer toolkit. These packages are maintained for existing consumers but are not recommended for new projects.
+Legacy packages for [Hydration](https://hydration.net) chain integration. This monorepo contains the stable, `@polkadot/api`-based trading SDK and cross-chain transfer toolkit. These packages are NOT maintained and are NOT recommended for new projects.
 
 ## Table of Contents
 
